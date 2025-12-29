@@ -49,7 +49,7 @@ resource "aws_vpn_connection" "this" {
   type                = "ipsec.1"
 
   static_routes_only                      = var.static_routes_only
-  enable_acceleration                     = var.enable_vpn_acceleration
+  enable_acceleration                     = var.transit_gateway_id != null ? var.enable_vpn_acceleration : null
   local_ipv4_network_cidr                 = var.local_ipv4_network_cidr
   remote_ipv4_network_cidr                = var.remote_ipv4_network_cidr
   local_ipv6_network_cidr                 = var.local_ipv6_network_cidr
