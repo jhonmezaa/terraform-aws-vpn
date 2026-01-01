@@ -92,4 +92,48 @@ locals {
   public_route_table_ids   = var.propagate_public_route_tables_vgw ? toset(var.public_route_table_ids) : toset([])
   intra_route_table_ids    = var.propagate_intra_route_tables_vgw ? toset(var.intra_route_table_ids) : toset([])
   database_route_table_ids = var.propagate_database_route_tables_vgw ? toset(var.database_route_table_ids) : toset([])
+
+  # Transit Gateway Route Tables (custom)
+  use_custom_tgw_route_tables         = length(var.transit_gateway_route_table_association_ids) > 0 || length(var.transit_gateway_route_table_propagation_ids) > 0
+  tgw_default_route_table_association = local.use_custom_tgw_route_tables ? false : var.transit_gateway_default_route_table_association
+  tgw_default_route_table_propagation = local.use_custom_tgw_route_tables ? false : var.transit_gateway_default_route_table_propagation
+  tgw_route_table_association_ids     = toset(var.transit_gateway_route_table_association_ids)
+  tgw_route_table_propagation_ids     = toset(var.transit_gateway_route_table_propagation_ids)
+
+  # Attachment IDs (needed for custom route table associations/propagations)
+  vpc_attachment_id = try(aws_ec2_transit_gateway_vpc_attachment.this[0].id, null)
+  vpn_attachment_id = try(aws_vpn_connection.this[0].transit_gateway_attachment_id, null)
+
+  # Create sets for all combinations of route tables and attachments
+  tgw_vpc_associations = local.create_transit_gateway_attachment && length(local.tgw_route_table_association_ids) > 0 ? {
+    for rt_id in local.tgw_route_table_association_ids :
+    "vpc-${rt_id}" => {
+      route_table_id = rt_id
+      attachment_id  = local.vpc_attachment_id
+    }
+  } : {}
+
+  tgw_vpn_associations = local.create_vpn_connection && var.transit_gateway_id != null && length(local.tgw_route_table_association_ids) > 0 ? {
+    for rt_id in local.tgw_route_table_association_ids :
+    "vpn-${rt_id}" => {
+      route_table_id = rt_id
+      attachment_id  = local.vpn_attachment_id
+    }
+  } : {}
+
+  tgw_vpc_propagations = local.create_transit_gateway_attachment && length(local.tgw_route_table_propagation_ids) > 0 ? {
+    for rt_id in local.tgw_route_table_propagation_ids :
+    "vpc-${rt_id}" => {
+      route_table_id = rt_id
+      attachment_id  = local.vpc_attachment_id
+    }
+  } : {}
+
+  tgw_vpn_propagations = local.create_vpn_connection && var.transit_gateway_id != null && length(local.tgw_route_table_propagation_ids) > 0 ? {
+    for rt_id in local.tgw_route_table_propagation_ids :
+    "vpn-${rt_id}" => {
+      route_table_id = rt_id
+      attachment_id  = local.vpn_attachment_id
+    }
+  } : {}
 }

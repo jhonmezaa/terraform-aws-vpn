@@ -1,42 +1,4 @@
 ################################################################################
-# VPN Gateway
-################################################################################
-
-resource "aws_vpn_gateway" "this" {
-  count = local.create_vpn_gateway ? 1 : 0
-
-  vpc_id            = var.vpc_id
-  amazon_side_asn   = var.amazon_side_asn
-  availability_zone = var.vpn_gateway_az
-
-  tags = local.vpn_gateway_tags
-}
-
-# Attach existing VPN Gateway to VPC
-resource "aws_vpn_gateway_attachment" "this" {
-  count = var.create_vpn_gateway && var.vpn_gateway_id != null ? 1 : 0
-
-  vpc_id         = var.vpc_id
-  vpn_gateway_id = var.vpn_gateway_id
-}
-
-################################################################################
-# Customer Gateway
-################################################################################
-
-resource "aws_customer_gateway" "this" {
-  count = local.create_customer_gateway ? 1 : 0
-
-  bgp_asn         = var.customer_gateway_bgp_asn
-  ip_address      = var.customer_gateway_ip_address
-  type            = "ipsec.1"
-  certificate_arn = var.customer_gateway_certificate_arn
-  device_name     = var.customer_gateway_device_name
-
-  tags = local.customer_gateway_tags
-}
-
-################################################################################
 # VPN Connection
 ################################################################################
 
@@ -131,24 +93,4 @@ resource "aws_vpn_connection" "this" {
   tunnel2_phase2_lifetime_seconds      = var.tunnel2_phase2_lifetime_seconds
 
   tags = local.vpn_connection_tags
-}
-
-################################################################################
-# Transit Gateway VPN Attachment
-################################################################################
-
-resource "aws_ec2_transit_gateway_vpc_attachment" "this" {
-  count = local.create_transit_gateway_attachment ? 1 : 0
-
-  subnet_ids         = var.transit_gateway_subnet_ids
-  transit_gateway_id = var.transit_gateway_id
-  vpc_id             = var.vpc_id
-
-  dns_support                                     = var.transit_gateway_dns_support
-  ipv6_support                                    = var.transit_gateway_ipv6_support
-  appliance_mode_support                          = var.transit_gateway_appliance_mode_support
-  transit_gateway_default_route_table_association = var.transit_gateway_default_route_table_association
-  transit_gateway_default_route_table_propagation = var.transit_gateway_default_route_table_propagation
-
-  tags = local.transit_gateway_attachment_tags
 }

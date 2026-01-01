@@ -25,6 +25,12 @@ variable "transit_gateway_subnet_ids" {
   type        = list(string)
 }
 
+variable "transit_gateway_route_table_ids" {
+  description = "List of Transit Gateway route table IDs for custom associations and propagations (optional, uses default if empty)"
+  type        = list(string)
+  default     = []
+}
+
 variable "customer_gateway_ip_address" {
   description = "IP address of the customer gateway's external interface"
   type        = string

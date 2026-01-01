@@ -23,12 +23,23 @@ module "vpn" {
   transit_gateway_subnet_ids = var.transit_gateway_subnet_ids
 
   # Transit Gateway VPC Attachment Configuration
-  transit_gateway_dns_support                     = "enable"
-  transit_gateway_ipv6_support                    = "disable"
-  transit_gateway_appliance_mode_support          = "disable"
-  transit_gateway_default_route_table_association = true
-  transit_gateway_default_route_table_propagation = true
+  transit_gateway_dns_support            = "enable"
+  transit_gateway_ipv6_support           = "disable"
+  transit_gateway_appliance_mode_support = "disable"
+
+  # Option 1: Use default route table (commented out, showing both options)
+  # transit_gateway_default_route_table_association = true
+  # transit_gateway_default_route_table_propagation = true
+
+  # Option 2: Use custom route tables (new feature in v1.1.0)
+  transit_gateway_route_table_association_ids = var.transit_gateway_route_table_ids
+  transit_gateway_route_table_propagation_ids = var.transit_gateway_route_table_ids
 
   # VPN Connection - use BGP dynamic routing
   static_routes_only = false
+
+  # Tunnel Inside CIDR - Custom ranges (optional, AWS auto-assigns if not specified)
+  # Must be in 169.254.0.0/16 range with /30 netmask
+  tunnel1_inside_cidr = "169.254.100.0/30" # AWS: .1, Customer: .2
+  tunnel2_inside_cidr = "169.254.100.4/30" # AWS: .5, Customer: .6
 }

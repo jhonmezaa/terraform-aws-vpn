@@ -32,3 +32,24 @@ output "vpn_connection_tunnel2_address" {
   description = "Public IP address of tunnel 2"
   value       = module.vpn.vpn_connection_tunnel2_address
 }
+
+# Custom Route Tables (v1.1.0 feature)
+output "tgw_route_table_vpc_associations" {
+  description = "Transit Gateway route table associations for VPC attachment"
+  value       = module.vpn.tgw_route_table_vpc_associations
+}
+
+output "tgw_route_table_vpn_associations" {
+  description = "Transit Gateway route table associations for VPN attachment"
+  value       = module.vpn.tgw_route_table_vpn_associations
+}
+
+output "tgw_route_table_vpc_propagations" {
+  description = "Transit Gateway route table propagations for VPC attachment"
+  value       = module.vpn.tgw_route_table_vpc_propagations
+}
+
+output "tgw_route_table_vpn_propagations" {
+  description = "Transit Gateway route table propagations for VPN attachment"
+  value       = module.vpn.tgw_route_table_vpn_propagations
+}
