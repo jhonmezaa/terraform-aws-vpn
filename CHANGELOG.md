@@ -5,6 +5,51 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2025-12-31
+
+### Changed
+- **Module File Structure Reorganization**
+  - Restructured module files to follow numbered convention (0-11) for better organization and consistency
+  - Split `main.tf` into focused, single-purpose files:
+    - `0-versions.tf`: Provider version constraints
+    - `1-data.tf`: Data sources
+    - `2-locals.tf`: Local values and naming logic
+    - `3-vpn-gateway.tf`: VPN Gateway resources
+    - `4-customer-gateway.tf`: Customer Gateway resources
+    - `5-vpn-connection.tf`: VPN Connection with tunnel configuration
+    - `6-tgw-vpc-attachment.tf`: Transit Gateway VPC attachment
+    - `7-static-routes.tf`: Static routes creation
+    - `8-route-propagation.tf`: Route propagation to route tables
+    - `9-tgw-route-tables.tf`: Transit Gateway custom route tables
+    - `10-variables.tf`: Input variables
+    - `11-outputs.tf`: Output values
+  - Renamed existing files to match numbered convention
+  - No functional changes - purely organizational improvement
+  - Makes it easier to locate specific functionality and maintain code
+  - Consistent with other terraform-aws-* modules in the monorepo
+
+## [1.1.0] - 2025-12-29
+
+### Added
+- **Transit Gateway Custom Route Tables Support**
+  - New variable `transit_gateway_route_table_association_ids` to specify custom route tables for associations
+  - New variable `transit_gateway_route_table_propagation_ids` to specify custom route tables for propagations
+  - Automatic creation of associations and propagations for both VPC and VPN attachments
+  - When custom route tables are specified, default route table association/propagation is automatically disabled
+  - New file `tgw-routes.tf` with resources for custom route table management
+  - VPN attachment associations use `replace_existing_association = true` to automatically replace default route table associations
+  - Four new outputs for tracking custom route table associations and propagations:
+    - `tgw_route_table_vpc_associations` - VPC attachment associations to custom route tables
+    - `tgw_route_table_vpn_associations` - VPN attachment associations to custom route tables
+    - `tgw_route_table_vpc_propagations` - VPC attachment route propagations to custom route tables
+    - `tgw_route_table_vpn_propagations` - VPN attachment route propagations to custom route tables
+
+### Changed
+- Enhanced `locals.tf` with logic to automatically disable default route tables when custom ones are specified
+- Modified VPC attachment to use computed locals for route table association/propagation settings
+- Both VPC and VPN attachments now support association and propagation to multiple custom route tables simultaneously
+- VPN attachments automatically replace default route table associations without manual intervention
+
 ## [1.0.1] - 2025-12-29
 
 ### Fixed

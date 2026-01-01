@@ -212,3 +212,51 @@ output "vpn_gateway_route_propagation_database" {
   description = "Database route table IDs with VPN route propagation enabled"
   value       = [for k, v in aws_vpn_gateway_route_propagation.database : v.route_table_id]
 }
+
+################################################################################
+# Transit Gateway Custom Route Tables Outputs
+################################################################################
+
+output "tgw_route_table_vpc_associations" {
+  description = "Map of Transit Gateway route table associations for VPC attachment"
+  value = {
+    for k, v in aws_ec2_transit_gateway_route_table_association.vpc :
+    k => {
+      route_table_id = v.transit_gateway_route_table_id
+      attachment_id  = v.transit_gateway_attachment_id
+    }
+  }
+}
+
+output "tgw_route_table_vpn_associations" {
+  description = "Map of Transit Gateway route table associations for VPN attachment"
+  value = {
+    for k, v in aws_ec2_transit_gateway_route_table_association.vpn :
+    k => {
+      route_table_id = v.transit_gateway_route_table_id
+      attachment_id  = v.transit_gateway_attachment_id
+    }
+  }
+}
+
+output "tgw_route_table_vpc_propagations" {
+  description = "Map of Transit Gateway route table propagations for VPC attachment"
+  value = {
+    for k, v in aws_ec2_transit_gateway_route_table_propagation.vpc :
+    k => {
+      route_table_id = v.transit_gateway_route_table_id
+      attachment_id  = v.transit_gateway_attachment_id
+    }
+  }
+}
+
+output "tgw_route_table_vpn_propagations" {
+  description = "Map of Transit Gateway route table propagations for VPN attachment"
+  value = {
+    for k, v in aws_ec2_transit_gateway_route_table_propagation.vpn :
+    k => {
+      route_table_id = v.transit_gateway_route_table_id
+      attachment_id  = v.transit_gateway_attachment_id
+    }
+  }
+}

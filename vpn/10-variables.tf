@@ -635,6 +635,18 @@ variable "transit_gateway_default_route_table_propagation" {
   default     = true
 }
 
+variable "transit_gateway_route_table_association_ids" {
+  description = "List of Transit Gateway route table IDs to associate with VPC and VPN attachments. When specified, disables default route table association."
+  type        = list(string)
+  default     = []
+}
+
+variable "transit_gateway_route_table_propagation_ids" {
+  description = "List of Transit Gateway route table IDs to propagate routes from VPC and VPN attachments. When specified, disables default route table propagation."
+  type        = list(string)
+  default     = []
+}
+
 variable "transit_gateway_attachment_tags" {
   description = "Additional tags for Transit Gateway VPC attachment"
   type        = map(string)
