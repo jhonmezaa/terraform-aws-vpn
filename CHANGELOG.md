@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.3.0] - 2026-02-27
+
+### Added
+- `use_region_prefix` boolean variable (default: `true`) to control whether the region prefix is included in resource names. When `false`, names omit the prefix
+
+
 ## [v1.2.2] - 2026-02-27
 
 ### Changed

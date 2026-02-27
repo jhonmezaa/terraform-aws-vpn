@@ -295,6 +295,8 @@ Examples:
 
 Region prefixes are auto-detected or can be overridden via `region_prefix` variable.
 
+Set `use_region_prefix = false` to omit the region prefix from all resource names (e.g., `vgw-prod-myapp` instead of `ause1-vgw-prod-myapp`).
+
 ## Requirements
 
 | Name | Version |

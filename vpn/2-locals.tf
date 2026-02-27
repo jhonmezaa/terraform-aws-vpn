@@ -26,6 +26,7 @@ locals {
   }
 
   region_prefix = var.region_prefix != null ? var.region_prefix : lookup(local.region_prefix_map, data.aws_region.current.id, "aws")
+  name_prefix   = var.use_region_prefix ? "${local.region_prefix}-" : ""
 
   # VPN Gateway
   create_vpn_gateway = var.create_vpn_gateway && var.vpn_gateway_id == null
@@ -56,7 +57,7 @@ locals {
     local.common_tags,
     var.vpn_gateway_tags,
     {
-      Name = "${local.region_prefix}-vgw-${var.account_name}-${var.project_name}"
+      Name = "${local.name_prefix}vgw-${var.account_name}-${var.project_name}"
     }
   )
 
@@ -64,7 +65,7 @@ locals {
     local.common_tags,
     var.customer_gateway_tags,
     {
-      Name = "${local.region_prefix}-cgw-${var.account_name}-${var.project_name}"
+      Name = "${local.name_prefix}cgw-${var.account_name}-${var.project_name}"
     }
   )
 
@@ -72,7 +73,7 @@ locals {
     local.common_tags,
     var.vpn_connection_tags,
     {
-      Name = "${local.region_prefix}-vpn-${var.account_name}-${var.project_name}"
+      Name = "${local.name_prefix}vpn-${var.account_name}-${var.project_name}"
     }
   )
 
@@ -80,7 +81,7 @@ locals {
     local.common_tags,
     var.transit_gateway_attachment_tags,
     {
-      Name = "${local.region_prefix}-tgw-attach-${var.account_name}-${var.project_name}"
+      Name = "${local.name_prefix}tgw-attach-${var.account_name}-${var.project_name}"
     }
   )
 
