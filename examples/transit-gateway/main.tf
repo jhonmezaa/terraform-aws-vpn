@@ -19,8 +19,9 @@ module "vpn" {
   customer_gateway_ip_address = var.customer_gateway_ip_address
 
   # VPN Connection via Transit Gateway
-  transit_gateway_id         = var.transit_gateway_id
-  transit_gateway_subnet_ids = var.transit_gateway_subnet_ids
+  use_existing_transit_gateway = true
+  transit_gateway_id           = var.transit_gateway_id
+  transit_gateway_subnet_ids   = var.transit_gateway_subnet_ids
 
   # Transit Gateway VPC Attachment Configuration
   transit_gateway_dns_support            = "enable"

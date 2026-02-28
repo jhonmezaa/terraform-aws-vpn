@@ -47,9 +47,15 @@ variable "vpc_id" {
 }
 
 variable "vpn_gateway_id" {
-  description = "ID of existing VPN Gateway to attach to VPC (if provided, no new VPN Gateway will be created)"
+  description = "ID of existing VPN Gateway to attach to VPC (used when use_existing_vpn_gateway = true)"
   type        = string
   default     = null
+}
+
+variable "use_existing_vpn_gateway" {
+  description = "Set to true when providing an existing VPN Gateway ID via vpn_gateway_id. This avoids plan-time errors when the ID comes from another module output."
+  type        = bool
+  default     = false
 }
 
 variable "amazon_side_asn" {
@@ -80,9 +86,15 @@ variable "vpn_gateway_tags" {
 ################################################################################
 
 variable "customer_gateway_id" {
-  description = "ID of existing Customer Gateway (if provided, no new Customer Gateway will be created)"
+  description = "ID of existing Customer Gateway (used when use_existing_customer_gateway = true)"
   type        = string
   default     = null
+}
+
+variable "use_existing_customer_gateway" {
+  description = "Set to true when providing an existing Customer Gateway ID via customer_gateway_id. This avoids plan-time errors when the ID comes from another module output."
+  type        = bool
+  default     = false
 }
 
 variable "customer_gateway_bgp_asn" {
@@ -585,9 +597,15 @@ variable "tunnel2_cloudwatch_log_output_format" {
 ################################################################################
 
 variable "transit_gateway_id" {
-  description = "ID of the Transit Gateway to attach VPN to (if using Transit Gateway instead of VPN Gateway)"
+  description = "ID of the Transit Gateway to attach VPN to (used when use_existing_transit_gateway = true)"
   type        = string
   default     = null
+}
+
+variable "use_existing_transit_gateway" {
+  description = "Set to true when providing an existing Transit Gateway ID via transit_gateway_id. This avoids plan-time errors when the ID comes from another module output."
+  type        = bool
+  default     = false
 }
 
 variable "transit_gateway_subnet_ids" {

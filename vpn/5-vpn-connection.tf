@@ -5,13 +5,13 @@
 resource "aws_vpn_connection" "this" {
   count = local.create_vpn_connection ? 1 : 0
 
-  vpn_gateway_id      = var.transit_gateway_id == null ? local.vpn_gateway_id : null
+  vpn_gateway_id      = !var.use_existing_transit_gateway ? local.vpn_gateway_id : null
   customer_gateway_id = local.customer_gateway_id
-  transit_gateway_id  = var.transit_gateway_id
+  transit_gateway_id  = var.use_existing_transit_gateway ? var.transit_gateway_id : null
   type                = "ipsec.1"
 
   static_routes_only                      = var.static_routes_only
-  enable_acceleration                     = var.transit_gateway_id != null ? var.enable_vpn_acceleration : null
+  enable_acceleration                     = var.use_existing_transit_gateway ? var.enable_vpn_acceleration : null
   local_ipv4_network_cidr                 = var.local_ipv4_network_cidr
   remote_ipv4_network_cidr                = var.remote_ipv4_network_cidr
   local_ipv6_network_cidr                 = var.local_ipv6_network_cidr
