@@ -29,20 +29,22 @@ locals {
   name_prefix   = var.use_region_prefix ? "${local.region_prefix}-" : ""
 
   # VPN Gateway
-  create_vpn_gateway = var.create_vpn_gateway && var.vpn_gateway_id == null
+  # Use the explicit boolean var.use_existing_vpn_gateway to avoid count depends on unknown values
+  create_vpn_gateway = var.create_vpn_gateway && !var.use_existing_vpn_gateway
   vpn_gateway_id = var.create_vpn_gateway ? (
-    var.vpn_gateway_id != null ? var.vpn_gateway_id : try(aws_vpn_gateway.this[0].id, null)
+    var.use_existing_vpn_gateway ? var.vpn_gateway_id : try(aws_vpn_gateway.this[0].id, null)
   ) : null
 
   # Customer Gateway
-  create_customer_gateway = var.create_vpn_gateway && var.customer_gateway_id == null && var.customer_gateway_bgp_asn != null && var.customer_gateway_ip_address != null
-  customer_gateway_id     = var.customer_gateway_id != null ? var.customer_gateway_id : try(aws_customer_gateway.this[0].id, null)
+  # Use the explicit boolean var.use_existing_customer_gateway to avoid count depends on unknown values
+  create_customer_gateway = var.create_vpn_gateway && !var.use_existing_customer_gateway && var.customer_gateway_bgp_asn != null && var.customer_gateway_ip_address != null
+  customer_gateway_id     = var.use_existing_customer_gateway ? var.customer_gateway_id : try(aws_customer_gateway.this[0].id, null)
 
   # VPN Connection
-  create_vpn_connection = var.create_vpn_gateway && (local.create_customer_gateway || var.customer_gateway_id != null)
+  create_vpn_connection = var.create_vpn_gateway && (local.create_customer_gateway || var.use_existing_customer_gateway)
 
   # Transit Gateway
-  create_transit_gateway_attachment = var.transit_gateway_id != null && var.create_vpn_gateway
+  create_transit_gateway_attachment = var.use_existing_transit_gateway && var.create_vpn_gateway
 
   # Tags
   common_tags = merge(
@@ -88,11 +90,19 @@ locals {
   # Static routes
   vpn_gateway_routes = var.static_routes_only && var.static_routes_destinations != null ? toset(var.static_routes_destinations) : toset([])
 
-  # Route table IDs for propagation
-  private_route_table_ids  = var.propagate_private_route_tables_vgw ? toset(var.private_route_table_ids) : toset([])
-  public_route_table_ids   = var.propagate_public_route_tables_vgw ? toset(var.public_route_table_ids) : toset([])
-  intra_route_table_ids    = var.propagate_intra_route_tables_vgw ? toset(var.intra_route_table_ids) : toset([])
-  database_route_table_ids = var.propagate_database_route_tables_vgw ? toset(var.database_route_table_ids) : toset([])
+  # Route table IDs for propagation - use index-based keys to avoid unknown value issues
+  private_route_table_ids = var.propagate_private_route_tables_vgw ? {
+    for idx, rt_id in var.private_route_table_ids : tostring(idx) => rt_id
+  } : {}
+  public_route_table_ids = var.propagate_public_route_tables_vgw ? {
+    for idx, rt_id in var.public_route_table_ids : tostring(idx) => rt_id
+  } : {}
+  intra_route_table_ids = var.propagate_intra_route_tables_vgw ? {
+    for idx, rt_id in var.intra_route_table_ids : tostring(idx) => rt_id
+  } : {}
+  database_route_table_ids = var.propagate_database_route_tables_vgw ? {
+    for idx, rt_id in var.database_route_table_ids : tostring(idx) => rt_id
+  } : {}
 
   # Transit Gateway Route Tables (custom)
   use_custom_tgw_route_tables         = length(var.transit_gateway_route_table_association_ids) > 0 || length(var.transit_gateway_route_table_propagation_ids) > 0
@@ -114,7 +124,7 @@ locals {
     }
   } : {}
 
-  tgw_vpn_associations = local.create_vpn_connection && var.transit_gateway_id != null && length(local.tgw_route_table_association_ids) > 0 ? {
+  tgw_vpn_associations = local.create_vpn_connection && var.use_existing_transit_gateway && length(local.tgw_route_table_association_ids) > 0 ? {
     for rt_id in local.tgw_route_table_association_ids :
     "vpn-${rt_id}" => {
       route_table_id = rt_id
@@ -130,7 +140,7 @@ locals {
     }
   } : {}
 
-  tgw_vpn_propagations = local.create_vpn_connection && var.transit_gateway_id != null && length(local.tgw_route_table_propagation_ids) > 0 ? {
+  tgw_vpn_propagations = local.create_vpn_connection && var.use_existing_transit_gateway && length(local.tgw_route_table_propagation_ids) > 0 ? {
     for rt_id in local.tgw_route_table_propagation_ids :
     "vpn-${rt_id}" => {
       route_table_id = rt_id

@@ -14,7 +14,7 @@ resource "aws_vpn_gateway" "this" {
 
 # Attach existing VPN Gateway to VPC
 resource "aws_vpn_gateway_attachment" "this" {
-  count = var.create_vpn_gateway && var.vpn_gateway_id != null ? 1 : 0
+  count = var.create_vpn_gateway && var.use_existing_vpn_gateway ? 1 : 0
 
   vpc_id         = var.vpc_id
   vpn_gateway_id = var.vpn_gateway_id

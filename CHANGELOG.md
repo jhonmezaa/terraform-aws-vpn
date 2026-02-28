@@ -1,5 +1,20 @@
 # Changelog
 
+## [v1.3.1] - 2026-02-28
+
+### Fixed
+- **Plan-time unknown value errors when using cross-module references**: Replaced null-check conditionals (`var.vpn_gateway_id == null`, `var.customer_gateway_id == null`, `var.transit_gateway_id != null`) with explicit boolean flags to avoid "Invalid count argument" and "for_each set includes values derived from resource attributes" errors when IDs come from other Terraform module outputs
+  - Added `use_existing_vpn_gateway` variable (default: `false`) - set to `true` when providing an existing VPN Gateway ID via `vpn_gateway_id`
+  - Added `use_existing_customer_gateway` variable (default: `false`) - set to `true` when providing an existing Customer Gateway ID via `customer_gateway_id`
+  - Added `use_existing_transit_gateway` variable (default: `false`) - set to `true` when providing an existing Transit Gateway ID via `transit_gateway_id`
+- **Route propagation for_each errors**: Changed route table ID locals from `toset()` to index-based maps (`{ for idx, rt_id in var.route_table_ids : tostring(idx) => rt_id }`) so that `for_each` keys are known at plan time even when route table IDs are computed values from other modules
+
+### Changed
+- Updated variable descriptions for `vpn_gateway_id`, `customer_gateway_id`, and `transit_gateway_id` to reference their companion boolean variables
+- `vpn_gateway_attachment` count condition now uses `var.use_existing_vpn_gateway` instead of `var.vpn_gateway_id != null`
+- `vpn_connection` resource now uses `var.use_existing_transit_gateway` for transit gateway conditional logic
+- Transit Gateway association/propagation locals now use `var.use_existing_transit_gateway` instead of `var.transit_gateway_id != null`
+
 ## [v1.3.0] - 2026-02-27
 
 ### Added
