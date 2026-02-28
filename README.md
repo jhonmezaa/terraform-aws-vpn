@@ -213,12 +213,12 @@ module "vpn" {
 
 ## Examples
 
-| Example | Description |
-|---------|-------------|
-| [simple-vpn](./examples/simple-vpn) | Basic VPN with BGP dynamic routing |
-| [static-routes](./examples/static-routes) | VPN with static routing |
-| [transit-gateway](./examples/transit-gateway) | VPN via Transit Gateway |
-| [complete](./examples/complete) | All features with production-grade security |
+| Example                                       | Description                                 |
+| --------------------------------------------- | ------------------------------------------- |
+| [simple-vpn](./examples/simple-vpn)           | Basic VPN with BGP dynamic routing          |
+| [static-routes](./examples/static-routes)     | VPN with static routing                     |
+| [transit-gateway](./examples/transit-gateway) | VPN via Transit Gateway                     |
+| [complete](./examples/complete)               | All features with production-grade security |
 
 ## Architecture
 
@@ -289,6 +289,7 @@ module "vpn" {
 Resources follow the pattern: `{region_prefix}-{resource}-{account_name}-{project_name}`
 
 Examples:
+
 - VPN Gateway: `ause1-vgw-prod-myapp`
 - Customer Gateway: `ause1-cgw-prod-myapp`
 - VPN Connection: `ause1-vpn-prod-myapp`
@@ -299,16 +300,16 @@ Set `use_region_prefix = false` to omit the region prefix from all resource name
 
 ## Requirements
 
-| Name | Version |
-|------|---------|
-| terraform | >= 1.3 |
-| aws | >= 5.42 |
+| Name      | Version |
+| --------- | ------- |
+| terraform | >= 1.3  |
+| aws       | >= 5.42 |
 
 ## Providers
 
 | Name | Version |
-|------|---------|
-| aws | >= 5.42 |
+| ---- | ------- |
+| aws  | >= 5.42 |
 
 ## Resources Created
 

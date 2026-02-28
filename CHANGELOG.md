@@ -3,6 +3,7 @@
 ## [v1.3.1] - 2026-02-28
 
 ### Fixed
+
 - **Plan-time unknown value errors when using cross-module references**: Replaced null-check conditionals (`var.vpn_gateway_id == null`, `var.customer_gateway_id == null`, `var.transit_gateway_id != null`) with explicit boolean flags to avoid "Invalid count argument" and "for_each set includes values derived from resource attributes" errors when IDs come from other Terraform module outputs
   - Added `use_existing_vpn_gateway` variable (default: `false`) - set to `true` when providing an existing VPN Gateway ID via `vpn_gateway_id`
   - Added `use_existing_customer_gateway` variable (default: `false`) - set to `true` when providing an existing Customer Gateway ID via `customer_gateway_id`
@@ -10,6 +11,7 @@
 - **Route propagation for_each errors**: Changed route table ID locals from `toset()` to index-based maps (`{ for idx, rt_id in var.route_table_ids : tostring(idx) => rt_id }`) so that `for_each` keys are known at plan time even when route table IDs are computed values from other modules
 
 ### Changed
+
 - Updated variable descriptions for `vpn_gateway_id`, `customer_gateway_id`, and `transit_gateway_id` to reference their companion boolean variables
 - `vpn_gateway_attachment` count condition now uses `var.use_existing_vpn_gateway` instead of `var.vpn_gateway_id != null`
 - `vpn_connection` resource now uses `var.use_existing_transit_gateway` for transit gateway conditional logic
@@ -18,20 +20,20 @@
 ## [v1.3.0] - 2026-02-27
 
 ### Added
-- `use_region_prefix` boolean variable (default: `true`) to control whether the region prefix is included in resource names. When `false`, names omit the prefix
 
+- `use_region_prefix` boolean variable (default: `true`) to control whether the region prefix is included in resource names. When `false`, names omit the prefix
 
 ## [v1.2.2] - 2026-02-27
 
 ### Changed
-- Standardize Terraform `required_version` to `~> 1.0` across module and examples
 
+- Standardize Terraform `required_version` to `~> 1.0` across module and examples
 
 ## [v1.2.1] - 2026-02-27
 
 ### Changed
-- Update AWS provider constraint to `~> 6.0` across module and examples
 
+- Update AWS provider constraint to `~> 6.0` across module and examples
 
 All notable changes to this project will be documented in this file.
 
@@ -41,6 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.2.0] - 2025-12-31
 
 ### Changed
+
 - **Module File Structure Reorganization**
   - Restructured module files to follow numbered convention (0-11) for better organization and consistency
   - Split `main.tf` into focused, single-purpose files:
@@ -59,11 +62,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Renamed existing files to match numbered convention
   - No functional changes - purely organizational improvement
   - Makes it easier to locate specific functionality and maintain code
-  - Consistent with other terraform-aws-* modules in the monorepo
+  - Consistent with other terraform-aws-\* modules in the monorepo
 
 ## [1.1.0] - 2025-12-29
 
 ### Added
+
 - **Transit Gateway Custom Route Tables Support**
   - New variable `transit_gateway_route_table_association_ids` to specify custom route tables for associations
   - New variable `transit_gateway_route_table_propagation_ids` to specify custom route tables for propagations
@@ -78,6 +82,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `tgw_route_table_vpn_propagations` - VPN attachment route propagations to custom route tables
 
 ### Changed
+
 - Enhanced `locals.tf` with logic to automatically disable default route tables when custom ones are specified
 - Modified VPC attachment to use computed locals for route table association/propagation settings
 - Both VPC and VPN attachments now support association and propagation to multiple custom route tables simultaneously
@@ -86,6 +91,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.1] - 2025-12-29
 
 ### Fixed
+
 - **enable_acceleration** attribute now conditional on `transit_gateway_id` presence
   - Previously caused errors when creating standard VPN connections (non-Transit Gateway)
   - Now only set when Transit Gateway is used
@@ -96,6 +102,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 #### Core Features
+
 - VPN Gateway creation and attachment to VPC
 - Customer Gateway configuration with BGP ASN
 - Site-to-Site VPN Connection with dual tunnels
@@ -105,6 +112,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Route propagation to multiple route table types (private, public, database, intra)
 
 #### Tunnel Configuration
+
 - Full Phase 1 IKE configuration (DH groups, encryption, integrity, lifetime)
 - Full Phase 2 IPsec configuration (DH groups, encryption, integrity, lifetime)
 - Custom inside CIDR blocks for both tunnels
@@ -118,16 +126,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Tunnel lifecycle control
 
 #### Monitoring & Logging
+
 - CloudWatch Logs integration for both tunnels
 - Configurable log output format (JSON/text)
 - Log group ARN configuration
 
 #### High Availability
+
 - Dual tunnel support with automatic failover
 - BGP for dynamic route advertisement
 - DPD with automatic tunnel restart
 
 #### Advanced Features
+
 - VPN acceleration support
 - IPv4 and IPv6 network CIDR configuration
 - Outside IP address type selection (Public/Private)
@@ -137,12 +148,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Transit Gateway default route table association and propagation
 
 #### Resource Naming
+
 - Consistent naming convention across all resources
 - Region prefix auto-detection for 18+ AWS regions
 - Override capability for region prefix
 - Account and project name integration
 
 #### Outputs
+
 - Comprehensive VPN Gateway outputs (ID, ARN, ASN)
 - Customer Gateway outputs (ID, ARN, BGP ASN, IP)
 - VPN Connection outputs (ID, ARN, type, configuration)
@@ -152,12 +165,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Route propagation status for all route table types
 
 #### Examples
+
 - **simple-vpn**: Basic VPN with BGP dynamic routing
 - **static-routes**: VPN with static routing configuration
 - **transit-gateway**: Transit Gateway VPN integration
 - **complete**: All features enabled with production-grade security settings
 
 #### Documentation
+
 - Comprehensive README with usage examples
 - Architecture diagrams for standard and Transit Gateway VPN
 - Security best practices documentation
@@ -167,6 +182,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Individual README for each example
 
 #### Validation
+
 - Terraform >= 1.3 compatibility
 - AWS Provider >= 5.42 compatibility
 - Input variable validation for:
@@ -183,6 +199,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Transit Gateway settings (enable/disable)
 
 #### Security
+
 - Sensitive output handling for preshared keys
 - Sensitive variable handling for tunnel PSKs
 - Production-grade encryption defaults
@@ -191,6 +208,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - AES256-GCM-16 encryption support
 
 ### Infrastructure
+
 - MIT License
 - Git repository initialization
 - .gitignore for Terraform files
