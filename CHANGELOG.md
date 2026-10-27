@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.3.5] - 2026-10-27
+
+### Changed
+
+- Docs: normalize CHANGELOG format: move the Keep a Changelog preamble below the title and use `## [vX.Y.Z] - YYYY-MM-DD` headings for all entries
+
+### Fixed
+
+- Docs: repository owner in links (`github.com/jmeza` -> `github.com/jhonmezaa`) in the README author link and the CHANGELOG `[v1.0.0]` reference; the reference now points to the initial release commit because no `v1.0.0` tag exists
+
 ## [v1.3.4] - 2026-10-27
 
 ### Fixed
