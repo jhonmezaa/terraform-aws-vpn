@@ -27,8 +27,8 @@ Production-ready Terraform module for AWS Site-to-Site VPN with support for VPN 
 ## Version
 
 **Current Version**: 1.0.0
-**Terraform**: >= 1.3
-**AWS Provider**: >= 5.42
+**Terraform**: >= 1.0
+**AWS Provider**: >= 6.0
 
 ## Usage
 
@@ -302,14 +302,14 @@ Set `use_region_prefix = false` to omit the region prefix from all resource name
 
 | Name      | Version |
 | --------- | ------- |
-| terraform | >= 1.3  |
-| aws       | >= 5.42 |
+| terraform | >= 1.0  |
+| aws       | >= 6.0  |
 
 ## Providers
 
 | Name | Version |
 | ---- | ------- |
-| aws  | >= 5.42 |
+| aws  | >= 6.0  |
 
 ## Resources Created
 
