@@ -236,4 +236,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Module structure following monorepo patterns
 - Version constraints in all examples
 
-[v1.0.0]: https://github.com/jmeza/terraform-aws-vpn/releases/tag/v1.0.0
+[v1.0.0]: https://github.com/jhonmezaa/terraform-aws-vpn/tree/37acb69ff7cab93062fe18332bc29556d6c5b6d9
