@@ -323,7 +323,7 @@ Set `use_region_prefix = false` to omit the region prefix from all resource name
 
 ## Authors
 
-Module managed by [Jhon Meza](https://github.com/jmeza)
+Module managed by [Jhon Meza](https://github.com/jhonmezaa)
 
 ## License
 
