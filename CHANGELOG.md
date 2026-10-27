@@ -1,5 +1,10 @@
 # Changelog
 
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
 ## [v1.3.4] - 2026-10-27
 
 ### Fixed
@@ -56,12 +61,7 @@
 
 - Update AWS provider constraint to `~> 6.0` across module and examples
 
-All notable changes to this project will be documented in this file.
-
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-## [1.2.0] - 2025-12-31
+## [v1.2.0] - 2025-12-31
 
 ### Changed
 
@@ -85,7 +85,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Makes it easier to locate specific functionality and maintain code
   - Consistent with other terraform-aws-\* modules in the monorepo
 
-## [1.1.0] - 2025-12-29
+## [v1.1.0] - 2025-12-29
 
 ### Added
 
@@ -109,7 +109,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Both VPC and VPN attachments now support association and propagation to multiple custom route tables simultaneously
 - VPN attachments automatically replace default route table associations without manual intervention
 
-## [1.0.1] - 2025-12-29
+## [v1.0.1] - 2025-12-29
 
 ### Fixed
 
@@ -118,7 +118,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Now only set when Transit Gateway is used
   - All examples tested and validated with AWS credentials
 
-## [1.0.0] - 2025-12-29
+## [v1.0.0] - 2025-12-29
 
 ### Added
 
@@ -236,4 +236,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Module structure following monorepo patterns
 - Version constraints in all examples
 
-[1.0.0]: https://github.com/jmeza/terraform-aws-vpn/releases/tag/v1.0.0
+[v1.0.0]: https://github.com/jmeza/terraform-aws-vpn/releases/tag/v1.0.0
