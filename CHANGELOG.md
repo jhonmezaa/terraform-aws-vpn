@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.3.4] - 2026-10-27
+
+### Fixed
+
+- Replace deprecated `data.aws_region.current.id` with `data.aws_region.current.region` (AWS provider v6) in `vpn/2-locals.tf`
+
 ## [v1.3.3] - 2026-10-27
 
 ### Changed
@@ -8,6 +14,12 @@
 - Set module `required_version` to `>= 1.0` (was `~> 1.0`): the module uses no features newer than Terraform 1.0 (no `optional()`, cross-variable validation, `moved`/`import`/`removed` blocks, etc.)
 - Examples (root modules) keep pessimistic constraints: `required_version` `~> 1.0`, AWS provider `~> 6.0`
 - Update README version and requirements tables (Terraform `>= 1.0`, AWS provider `>= 6.0`)
+
+## [v1.3.2] - 2026-02-28
+
+### Changed
+
+- Documentation only: reformat README tables and CHANGELOG (no module code changes)
 
 ## [v1.3.1] - 2026-02-28
 
