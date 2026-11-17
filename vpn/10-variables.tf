@@ -5,11 +5,31 @@
 variable "account_name" {
   description = "Account name for resource naming (e.g., 'prod', 'dev', 'staging')"
   type        = string
+
+  validation {
+    condition     = length(var.account_name) >= 1 && length(var.account_name) <= 32
+    error_message = "account_name debe tener entre 1 y 32 caracteres."
+  }
+
+  validation {
+    condition     = can(regex("^[a-z0-9-]+$", var.account_name))
+    error_message = "account_name solo puede contener letras minúsculas, números y guiones."
+  }
 }
 
 variable "project_name" {
   description = "Project name for resource naming"
   type        = string
+
+  validation {
+    condition     = length(var.project_name) >= 1 && length(var.project_name) <= 32
+    error_message = "project_name debe tener entre 1 y 32 caracteres."
+  }
+
+  validation {
+    condition     = can(regex("^[a-z0-9-]+$", var.project_name))
+    error_message = "project_name solo puede contener letras minúsculas, números y guiones."
+  }
 }
 
 variable "region_prefix" {
@@ -35,7 +55,7 @@ variable "tags_common" {
 ################################################################################
 
 variable "create_vpn_gateway" {
-  description = "Create VPN gateway and related resources"
+  description = "Master switch: create the VPN resources (VPN Gateway, Customer Gateway, VPN connection, Transit Gateway attachment). The VPN Gateway itself is skipped when use_existing_transit_gateway = true or use_existing_vpn_gateway = true"
   type        = bool
   default     = true
 }
@@ -64,8 +84,8 @@ variable "amazon_side_asn" {
   default     = 64512
 
   validation {
-    condition     = var.amazon_side_asn >= 64512 && var.amazon_side_asn <= 65534
-    error_message = "Amazon side ASN must be in the private ASN range (64512-65534)."
+    condition     = (var.amazon_side_asn >= 64512 && var.amazon_side_asn <= 65534) || (var.amazon_side_asn >= 4200000000 && var.amazon_side_asn <= 4294967294)
+    error_message = "Amazon side ASN must be a private ASN (64512-65534 or 4200000000-4294967294)."
   }
 }
 
@@ -229,10 +249,15 @@ variable "tunnel1_inside_ipv6_cidr" {
 }
 
 variable "tunnel1_preshared_key" {
-  description = "Preshared key for tunnel 1 (will be generated if not provided)"
+  description = "Preshared key for tunnel 1 (will be generated if not provided). 8-64 characters (letters, numbers, periods and underscores) and cannot start with zero"
   type        = string
   default     = null
   sensitive   = true
+
+  validation {
+    condition     = var.tunnel1_preshared_key == null || can(regex("^[a-zA-Z1-9._][a-zA-Z0-9._]{7,63}$", var.tunnel1_preshared_key))
+    error_message = "tunnel1_preshared_key must be 8-64 characters (letters, numbers, '.', '_') and cannot start with zero."
+  }
 }
 
 variable "tunnel1_dpd_timeout_action" {
@@ -419,10 +444,15 @@ variable "tunnel2_inside_ipv6_cidr" {
 }
 
 variable "tunnel2_preshared_key" {
-  description = "Preshared key for tunnel 2 (will be generated if not provided)"
+  description = "Preshared key for tunnel 2 (will be generated if not provided). 8-64 characters (letters, numbers, periods and underscores) and cannot start with zero"
   type        = string
   default     = null
   sensitive   = true
+
+  validation {
+    condition     = var.tunnel2_preshared_key == null || can(regex("^[a-zA-Z1-9._][a-zA-Z0-9._]{7,63}$", var.tunnel2_preshared_key))
+    error_message = "tunnel2_preshared_key must be 8-64 characters (letters, numbers, '.', '_') and cannot start with zero."
+  }
 }
 
 variable "tunnel2_dpd_timeout_action" {
@@ -673,6 +703,18 @@ variable "transit_gateway_route_table_propagation_ids" {
 
 variable "transit_gateway_attachment_tags" {
   description = "Additional tags for Transit Gateway VPC attachment"
+  type        = map(string)
+  default     = {}
+}
+
+variable "tag_vpn_transit_gateway_attachment" {
+  description = "Whether to tag the Transit Gateway attachment that AWS creates for a TGW VPN connection (aws_ec2_tag). Only used when use_existing_transit_gateway = true"
+  type        = bool
+  default     = true
+}
+
+variable "vpn_transit_gateway_attachment_tags" {
+  description = "Additional tags for the Transit Gateway attachment of the VPN connection"
   type        = map(string)
   default     = {}
 }

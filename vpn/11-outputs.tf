@@ -184,8 +184,13 @@ output "transit_gateway_attachment_id" {
   value       = try(aws_ec2_transit_gateway_vpc_attachment.this[0].id, null)
 }
 
+output "vpn_transit_gateway_attachment_tags" {
+  description = "Tags applied to the Transit Gateway attachment of the VPN connection (TGW mode only)"
+  value       = { for k, v in aws_ec2_tag.vpn_transit_gateway_attachment : k => v.value }
+}
+
 output "transit_gateway_attachment_state" {
-  description = "State of the Transit Gateway VPC attachment"
+  description = "Derived state of the Transit Gateway VPC attachment: \"available\" when the attachment is managed by this module, null otherwise (not read from the AWS API)"
   value       = try(aws_ec2_transit_gateway_vpc_attachment.this[0].id, null) != null ? "available" : null
 }
 

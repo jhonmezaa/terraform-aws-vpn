@@ -10,7 +10,8 @@ module "vpn" {
   project_name = var.project_name
   tags_common  = var.tags_common
 
-  # VPN Gateway - not created when using Transit Gateway
+  # Master switch. No VPN Gateway is created when use_existing_transit_gateway = true;
+  # vpc_id is used for the Transit Gateway VPC attachment.
   create_vpn_gateway = true
   vpc_id             = var.vpc_id
 
@@ -32,7 +33,7 @@ module "vpn" {
   # transit_gateway_default_route_table_association = true
   # transit_gateway_default_route_table_propagation = true
 
-  # Option 2: Use custom route tables (new feature in v1.1.0)
+  # Option 2: Use custom route tables
   transit_gateway_route_table_association_ids = var.transit_gateway_route_table_ids
   transit_gateway_route_table_propagation_ids = var.transit_gateway_route_table_ids
 
@@ -43,4 +44,9 @@ module "vpn" {
   # Must be in 169.254.0.0/16 range with /30 netmask
   tunnel1_inside_cidr = "169.254.100.0/30" # AWS: .1, Customer: .2
   tunnel2_inside_cidr = "169.254.100.4/30" # AWS: .5, Customer: .6
+
+  # Tags for the Transit Gateway attachment that AWS creates for the VPN connection
+  vpn_transit_gateway_attachment_tags = {
+    Purpose = "site-to-site-vpn"
+  }
 }
