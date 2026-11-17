@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.4.0] - 2026-11-17
+
+### Added
+
+- `aws_ec2_tag.vpn_transit_gateway_attachment`: in Transit Gateway mode (`use_existing_transit_gateway = true`) the Transit Gateway attachment that AWS creates for the VPN connection is now tagged (`Name = {region_prefix}-tgw-attach-vpn-{account_name}-{project_name}`, `tags_common`, `ManagedBy`), matching the upstream `terraform-aws-modules/vpn-gateway` behavior. New variables `tag_vpn_transit_gateway_attachment` (default `true`) and `vpn_transit_gateway_attachment_tags` (default `{}`), new output `vpn_transit_gateway_attachment_tags`
+- Validations for `account_name` and `project_name` (1-32 characters, `^[a-z0-9-]+$`)
+- Validation for `tunnel1_preshared_key` / `tunnel2_preshared_key` (8-64 characters, letters, numbers, `.` and `_`, cannot start with zero)
+- README: Inputs and Outputs tables generated from the code, and the full list of managed resources
+
+### Changed
+
+- `region_prefix_map` aligned with the canonical map shared by all modules and completed with the missing regions (e.g. `eu-west-1` `euw1` -> `euwe1`, `us-west-2` `usw2` -> `ausw2`, `eu-central-1` `euc1` -> `euce1`, `sa-east-1` `sae1` -> `saea1`)
+- Tag merge order is now `tags_common`, resource-specific tags, `Name`, then `Module`/`ManagedBy`, so `ManagedBy = "Terraform"` cannot be overridden by resource-specific tags
+- `amazon_side_asn` validation also accepts the 32-bit private ASN range (4200000000-4294967294)
+- `create_vpn_gateway` description clarifies that it is the master switch for all VPN resources
+- `transit_gateway_attachment_state` description clarifies that the value is derived, not read from AWS
+- README: `source` uses `github.com/jhonmezaa/terraform-aws-vpn//vpn?ref=v1.4.0`, current version updated and the Transit Gateway snippet now sets `use_existing_transit_gateway = true`
+
+### Fixed
+
+- Transit Gateway mode created an unused VPN Gateway attached to `vpc_id` (`create_vpn_gateway = true` was required for the VPN connection and it also created the VGW). No VPN Gateway, VPN Gateway attachment, VGW route propagation or `aws_vpn_connection_route` is created anymore when `use_existing_transit_gateway = true`
+- `aws_vpn_connection_route` was planned for Transit Gateway VPN connections (static routes on a TGW VPN are TGW routes) and indexed `aws_vpn_connection.this[0]` even when no VPN connection was created
+- `local_ipv4_network_cidr` / `remote_ipv4_network_cidr` (default `0.0.0.0/0`) were sent for IPv6 tunnels; IPv4 CIDRs are now only set when `tunnel_inside_ip_version = "ipv4"` and IPv6 CIDRs only when it is `"ipv6"`
+- Removed the unused `aws_availability_zones` data source
+
+### Upgrade notes
+
+- Transit Gateway mode: if you used `use_existing_transit_gateway = true`, the next plan destroys the unused `aws_vpn_gateway.this[0]` (and `aws_vpn_gateway_attachment.this[0]` / `aws_vpn_gateway_route_propagation.*` if any). To keep that VGW, run `terraform state rm 'module.<name>.aws_vpn_gateway.this[0]'` before applying. The VPN connection itself is not modified
+- The `Name` tag of every resource changes in place (no recreation) in regions whose prefix changed in the canonical map, e.g. `euw1-vpn-prod-app` -> `euwe1-vpn-prod-app`. Set `region_prefix = "euw1"` (old value) to keep the previous names
+- Transit Gateway mode: new `aws_ec2_tag` resources are created for the VPN Transit Gateway attachment. Set `tag_vpn_transit_gateway_attachment = false` if those tags are managed elsewhere
+
 ## [v1.3.5] - 2026-10-27
 
 ### Changed
