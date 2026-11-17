@@ -53,3 +53,8 @@ output "tgw_route_table_vpn_propagations" {
   description = "Transit Gateway route table propagations for VPN attachment"
   value       = module.vpn.tgw_route_table_vpn_propagations
 }
+
+output "vpn_transit_gateway_attachment_tags" {
+  description = "Tags applied to the Transit Gateway attachment of the VPN connection"
+  value       = module.vpn.vpn_transit_gateway_attachment_tags
+}

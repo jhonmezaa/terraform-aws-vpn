@@ -67,6 +67,7 @@ terraform apply
 | vpn_connection_id | ID of the VPN Connection |
 | vpn_connection_transit_gateway_attachment_id | Transit Gateway attachment ID for VPN |
 | transit_gateway_attachment_id | ID of the Transit Gateway VPC attachment |
+| vpn_transit_gateway_attachment_tags | Tags applied to the Transit Gateway attachment of the VPN connection |
 
 ## Example terraform.tfvars
 

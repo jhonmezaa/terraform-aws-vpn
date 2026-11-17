@@ -10,12 +10,13 @@ resource "aws_vpn_connection" "this" {
   transit_gateway_id  = var.use_existing_transit_gateway ? var.transit_gateway_id : null
   type                = "ipsec.1"
 
-  static_routes_only                      = var.static_routes_only
-  enable_acceleration                     = var.use_existing_transit_gateway ? var.enable_vpn_acceleration : null
-  local_ipv4_network_cidr                 = var.local_ipv4_network_cidr
-  remote_ipv4_network_cidr                = var.remote_ipv4_network_cidr
-  local_ipv6_network_cidr                 = var.local_ipv6_network_cidr
-  remote_ipv6_network_cidr                = var.remote_ipv6_network_cidr
+  static_routes_only  = var.static_routes_only
+  enable_acceleration = var.use_existing_transit_gateway ? var.enable_vpn_acceleration : null
+  # IPv4/IPv6 network CIDRs only apply to tunnels of the matching inside IP version
+  local_ipv4_network_cidr                 = var.tunnel_inside_ip_version == "ipv4" ? var.local_ipv4_network_cidr : null
+  remote_ipv4_network_cidr                = var.tunnel_inside_ip_version == "ipv4" ? var.remote_ipv4_network_cidr : null
+  local_ipv6_network_cidr                 = var.tunnel_inside_ip_version == "ipv6" ? var.local_ipv6_network_cidr : null
+  remote_ipv6_network_cidr                = var.tunnel_inside_ip_version == "ipv6" ? var.remote_ipv6_network_cidr : null
   outside_ip_address_type                 = var.outside_ip_address_type
   transport_transit_gateway_attachment_id = var.transport_transit_gateway_attachment_id
   tunnel_inside_ip_version                = var.tunnel_inside_ip_version
@@ -93,4 +94,18 @@ resource "aws_vpn_connection" "this" {
   tunnel2_phase2_lifetime_seconds      = var.tunnel2_phase2_lifetime_seconds
 
   tags = local.vpn_connection_tags
+}
+
+################################################################################
+# Transit Gateway VPN Attachment Tags
+################################################################################
+
+# AWS creates a Transit Gateway attachment for a TGW VPN connection but the
+# connection tags are not propagated to it, so tag it explicitly.
+resource "aws_ec2_tag" "vpn_transit_gateway_attachment" {
+  for_each = local.create_vpn_connection && var.use_existing_transit_gateway && var.tag_vpn_transit_gateway_attachment ? local.vpn_transit_gateway_attachment_tags : {}
+
+  resource_id = aws_vpn_connection.this[0].transit_gateway_attachment_id
+  key         = each.key
+  value       = each.value
 }
